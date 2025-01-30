@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torch_scatter
 
@@ -60,9 +61,13 @@ class DefaultSegmentorV2(nn.Module):
         else:
             feat = point
         seg_logits = self.seg_head(feat)
-        # train
+
         if self.training:
-            loss = self.criteria(seg_logits, input_dict["segment"])
+            try:
+                loss = self.criteria(seg_logits, input_dict["segment"])
+            except:
+                print(f"LOSS SHAPE ERROR: seg_logits_shape: {seg_logits.shape}, segment_shape: {input_dict['segment'].shape}")
+                loss = torch.tensor(float('nan'))
             return dict(loss=loss)
         # eval
         elif "segment" in input_dict.keys():

@@ -78,6 +78,8 @@ RUN TORCH_CUDA_ARCH_LIST="5.2 6.0 6.1 7.0+PTX 8.0" pip install Pointcept/libs/po
 
 # Build swin3d
 RUN TORCH_CUDA_ARCH_LIST="6.0 6.1 7.0+PTX 8.0" pip install -U git+https://github.com/microsoft/Swin3D.git -v
+
+RUN pip install flash-attn
 EOM
 
 docker build . -f ./Dockerfile -t $IMG_TAG

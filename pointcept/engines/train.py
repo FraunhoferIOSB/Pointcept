@@ -181,6 +181,8 @@ class Trainer(TrainerBase):
         with torch.cuda.amp.autocast(enabled=self.cfg.enable_amp):
             output_dict = self.model(input_dict)
             loss = output_dict["loss"]
+        if loss.isnan():
+            return
         self.optimizer.zero_grad()
         if self.cfg.enable_amp:
             self.scaler.scale(loss).backward()
@@ -199,10 +201,7 @@ class Trainer(TrainerBase):
                 self.scheduler.step()
         else:
             loss.backward()
-            if self.cfg.clip_grad is not None:
-                torch.nn.utils.clip_grad_norm_(
-                    self.model.parameters(), self.cfg.clip_grad
-                )
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
             self.optimizer.step()
             self.scheduler.step()
         if self.cfg.empty_cache:

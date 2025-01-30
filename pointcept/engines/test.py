@@ -137,6 +137,10 @@ class SemSegTester(TesterBase):
             self.cfg.data.test.type == "SemanticKITTIDataset" and comm.is_main_process()
         ):
             make_dirs(os.path.join(save_path, "submit"))
+        elif (
+            self.cfg.data.test.type == "GOOSEDataset" and comm.is_main_process()
+        ):
+            make_dirs(os.path.join(save_path, "submit"))
         elif self.cfg.data.test.type == "NuScenesDataset" and comm.is_main_process():
             import json
 
@@ -231,6 +235,26 @@ class SemSegTester(TesterBase):
                     fmt="%d",
                 )
                 pred = pred[:, 0]  # for mIoU, TODO: support top3 mIoU
+            elif self.cfg.data.test.type == "GOOSEDataset":
+                os.makedirs(
+                    os.path.join(
+                        save_path, "submit", "predictions"
+                    ),
+                    exist_ok=True,
+                )
+                submit = pred.astype(np.uint32)
+                submit = np.vectorize(
+                    self.test_loader.dataset.learning_map_inv.__getitem__
+                )(submit).astype(np.uint32)
+                submit.tofile(
+                    os.path.join(
+                        save_path,
+                        "submit",
+                        "predictions",
+                        f"{data_name}.label",
+                    )
+                )
+
             elif self.cfg.data.test.type == "SemanticKITTIDataset":
                 # 00_000000 -> 00, 000000
                 sequence_name, frame_name = data_name.split("_")
