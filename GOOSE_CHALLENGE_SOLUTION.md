@@ -1,5 +1,8 @@
 # GOOSE 3D Semantic Segmentation Challenge - 1st Place Solution
 
+
+**Paper:** [Technical Report for ICRA 2025 GOOSE 3D Semantic Segmentation Challenge: Adaptive Point Cloud Understanding for Heterogeneous Robotic Systems](https://arxiv.org/abs/2506.06995)
+
 This document outlines the winning solution for the GOOSE 3D Semantic Segmentation Challenge. The approach utilizes a novel architecture that combines the **Point Transformer v3 (PTv3)** backbone with a **Point Prompt Tuning (PPT)** framework to effectively process diverse 3D point cloud data from multiple robotic platforms.
 
 ## Methodology Overview
